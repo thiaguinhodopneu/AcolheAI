@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AcolheAI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        🤖 AcolheAI
+    </div>
+
+    <div id="chat"></div>
+
+    <div class="input-area">
+        <input id="texto" placeholder="Digite como você está se sentindo...">
+        <button onclick="enviar()">➤</button>
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("texto").focus();
+
+document.getElementById("texto").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") enviar();
+});
+
+window.onload = function() {
+    adicionarMensagem("Oi, eu sou o AcolheAI. Estou aqui pra te ouvir. Como você está se sentindo hoje?", "bot");
+}
+
+function adicionarMensagem(texto, tipo) {
+    let chat = document.getElementById("chat");
+
+    let hora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    let div = document.createElement("div");
+    div.classList.add("msg", tipo);
+
+    div.innerHTML = `
+        ${texto}
+        <div style="font-size:10px; margin-top:5px; opacity:0.6;">${hora}</div>
+    `;
+
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function mostrarDigitando() {
+    let chat = document.getElementById("chat");
+
+    let div = document.createElement("div");
+    div.classList.add("msg", "bot", "digitando");
+    div.id = "digitando";
+
+    div.innerHTML = "<span></span><span></span><span></span>";
+
+    chat.appendChild(div);
+}
+
+function removerDigitando() {
+    let d = document.getElementById("digitando");
+    if (d) d.remove();
+}
+
+function gerarResposta(texto) {
+    texto = texto.toLowerCase();
+
+    if (texto.includes("ansioso") || texto.includes("ansiedade")) {
+        return "Entendo... parece que algo está te deixando em alerta. Você consegue identificar o que está causando isso?";
+    }
+
+    if (texto.includes("triste") || texto.includes("sozinho")) {
+        return "Sinto muito que você esteja assim. Quer me contar mais sobre isso?";
+    }
+
+    if (texto.includes("cansado") || texto.includes("esgotado")) {
+        return "Parece que você está sobrecarregado. Você tem conseguido descansar?";
+    }
+
+    return "Entendo... quero te entender melhor. Pode me explicar um pouco mais?";
+}
+
+function enviar() {
+    let input = document.getElementById("texto");
+    let texto = input.value;
+
+    if (texto == "") return;
+
+    adicionarMensagem(texto, "user");
+    input.value = "";
+
+    mostrarDigitando();
+
+    setTimeout(() => {
+        removerDigitando();
+        adicionarMensagem(gerarResposta(texto), "bot");
+    }, 1000);
+}
+
+</script>
+
+</body>
+</html>

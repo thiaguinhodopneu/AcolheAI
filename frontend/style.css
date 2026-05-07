@@ -1,0 +1,117 @@
+body {
+    background: #0d0d0d;
+    font-family: Arial;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.app {
+    width: 340px;
+    height: 500px;
+    background: #1a1a1a;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.header {
+    background: #111;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+#chat {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.msg {
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    max-width: 75%;
+    animation: fadeIn 0.3s ease;
+    font-size: 14px;
+}
+
+.user {
+    background: #4CAF50;
+    color: white;
+    margin-left: auto;
+}
+
+.bot {
+    background: #333;
+    color: white;
+    margin-right: auto;
+}
+
+.input-area {
+    display: flex;
+    padding: 10px;
+    background: #111;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background: #222;
+    color: white;
+}
+
+button {
+    margin-left: 8px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 50%;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+/* animação entrada */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* loader digitando */
+.digitando span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: bounce 1s infinite;
+}
+
+.digitando span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.digitando span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {transform: scale(0);}
+    40% {transform: scale(1);}
+}
