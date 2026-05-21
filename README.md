@@ -72,7 +72,7 @@ Usuário → Frontend → Flask → Groq API → Resposta da IA
 ## 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/SEU-USUARIO/AcolheAI.git
+git clone https://github.com/thiaguinhodopneu/AcolheAI.git
 ```
 
 ---
