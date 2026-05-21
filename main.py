@@ -58,7 +58,7 @@ def chat():
     })
 
     try:
-        system_prompt = prompt_mestre()
+        system_prompt = prompt_mestre.get_prompt()
         resposta_ia = ia_service.enviar_mensagem(historico, system_prompt)
         return jsonify({"resposta": resposta_ia})
     except Exception as e:

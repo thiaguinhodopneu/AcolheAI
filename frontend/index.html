@@ -32,79 +32,130 @@ document.getElementById("texto").addEventListener("keypress", function(e) {
 });
 
 window.onload = function() {
-    adicionarMensagem("Oi, eu sou o AcolheAI. Estou aqui pra te ouvir. Como você está se sentindo hoje?", "bot");
+    adicionarMensagem(
+        "Oi, eu sou o AcolheAI. Estou aqui pra te ouvir. Como você está se sentindo hoje?",
+        "bot"
+    );
 }
 
+let historico = [];
+
 function adicionarMensagem(texto, tipo) {
+
     let chat = document.getElementById("chat");
 
-    let hora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let hora = new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute:'2-digit'
+    });
 
     let div = document.createElement("div");
+
     div.classList.add("msg", tipo);
 
     div.innerHTML = `
         ${texto}
-        <div style="font-size:10px; margin-top:5px; opacity:0.6;">${hora}</div>
+        <div style="font-size:10px; margin-top:5px; opacity:0.6;">
+            ${hora}
+        </div>
     `;
 
     chat.appendChild(div);
+
     chat.scrollTop = chat.scrollHeight;
 }
 
 function mostrarDigitando() {
+
     let chat = document.getElementById("chat");
 
     let div = document.createElement("div");
+
     div.classList.add("msg", "bot", "digitando");
+
     div.id = "digitando";
 
     div.innerHTML = "<span></span><span></span><span></span>";
 
     chat.appendChild(div);
+
+    chat.scrollTop = chat.scrollHeight;
 }
 
 function removerDigitando() {
+
     let d = document.getElementById("digitando");
+
     if (d) d.remove();
 }
 
-function gerarResposta(texto) {
-    texto = texto.toLowerCase();
+async function enviar() {
 
-    if (texto.includes("ansioso") || texto.includes("ansiedade")) {
-        return "Entendo... parece que algo está te deixando em alerta. Você consegue identificar o que está causando isso?";
-    }
-
-    if (texto.includes("triste") || texto.includes("sozinho")) {
-        return "Sinto muito que você esteja assim. Quer me contar mais sobre isso?";
-    }
-
-    if (texto.includes("cansado") || texto.includes("esgotado")) {
-        return "Parece que você está sobrecarregado. Você tem conseguido descansar?";
-    }
-
-    return "Entendo... quero te entender melhor. Pode me explicar um pouco mais?";
-}
-
-function enviar() {
     let input = document.getElementById("texto");
-    let texto = input.value;
 
-    if (texto == "") return;
+    let texto = input.value.trim();
+
+    if (texto === "") return;
 
     adicionarMensagem(texto, "user");
+
     input.value = "";
+
+    historico.push({
+        role: "user",
+        content: texto
+    });
 
     mostrarDigitando();
 
-    setTimeout(() => {
+    try {
+
+        const resposta = await fetch("/chat", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                mensagem: texto,
+                historico: historico
+            })
+        });
+
+        const dados = await resposta.json();
+
         removerDigitando();
-        adicionarMensagem(gerarResposta(texto), "bot");
-    }, 1000);
+
+        if (dados.resposta) {
+
+            adicionarMensagem(dados.resposta, "bot");
+
+            historico.push({
+                role: "assistant",
+                content: dados.resposta
+            });
+
+        } else {
+
+            adicionarMensagem(
+                "Desculpe, aconteceu um erro.",
+                "bot"
+            );
+        }
+
+    } catch (erro) {
+
+        removerDigitando();
+
+        adicionarMensagem(
+            "Erro ao conectar com a IA.",
+            "bot"
+        );
+
+        console.error(erro);
+    }
 }
 
 </script>
-
-</body>
-</html>
